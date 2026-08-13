@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "WebFetch(domain:play.google.com)",
+      "WebSearch",
+      "Bash(npx --yes create-expo-app@latest . --template blank-typescript --no-install)",
+      "Bash(npx --yes create-expo-app@latest mg --template blank-typescript --no-install)",
+      "Bash(rsync -a --exclude .git --exclude .claude /private/tmp/claude-501/-Users-gokalpelacmaz-Memory-Games/48176d9f-fbb3-4ed1-a3b0-d6a3fbc8ceeb/scratchpad/mg/ /Users/gokalpelacmaz/Memory-Games/)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(perl -pi -e 's/\\\\bSymbol\\\\b/SymbolTile/g' src/games/symbol-sequence/index.tsx)",
+      "Bash(perl -pi -e \"s/SymbolTile \\\\\\\\\\\\$\\\\{symbol.glyph\\\\}/Symbol \\\\${symbol.glyph}/; s/'SymbolTile Order'/'Symbol Order'/\" src/games/symbol-sequence/index.tsx)",
+      "Bash(npx expo *)",
+      "Bash(curl -s https://api.expo.dev/v2/versions/latest)",
+      "Bash(node -e ' *)",
+      "Bash(cat /Users/gokalpelacmaz/Woordje/package.json 2>&1 | head -40)",
+      "Bash(node -p \"require\\('./node_modules/expo/package.json'\\).version + ' | RN ' + require\\('./node_modules/react-native/package.json'\\).version + ' | reanimated ' + require\\('./node_modules/react-native-reanimated/package.json'\\).version\")",
+      "Bash(node -p \"JSON.stringify\\(require\\('./app.json'\\).expo.plugins\\)\")",
+      "Bash(cd /Users/gokalpelacmaz/KelMat && find src -type f | head -60)",
+      "Bash(python3 -)",
+      "Bash(node --experimental-strip-types /private/tmp/claude-501/-Users-gokalpelacmaz-Memory-Games/48176d9f-fbb3-4ed1-a3b0-d6a3fbc8ceeb/scratchpad/release-test.ts)"
+    ]
+  }
+}
