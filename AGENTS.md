@@ -2,7 +2,7 @@
 
 Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code.
 
-# Memory Games
+# Training Mind
 
 Expo Router app of brain-training mini-games. See `README.md` for the full
 architecture; the short version:

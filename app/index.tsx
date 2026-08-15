@@ -36,7 +36,7 @@ export default function Home() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View style={styles.headerText}>
-            <Text style={[styles.title, { color: theme.colors.text }]}>Memory Games</Text>
+            <Text style={[styles.title, { color: theme.colors.text }]}>Training Mind</Text>
             <Text style={[styles.subtitle, { color: theme.colors.textMuted }]}>
               {totals.plays > 0
                 ? `${totals.plays} runs · ${totals.best} points banked`

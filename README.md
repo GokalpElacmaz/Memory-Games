@@ -1,4 +1,4 @@
-# Memory Games
+# Training Mind
 
 An Expo (React Native) app of short brain-training mini-games, built so that
 adding a game is a one-file job.
@@ -147,18 +147,35 @@ and only the first `submit` in a round counts.
 
 ## Publishing
 
-`app.json` still carries placeholder identifiers — change these before the first
-build:
+The app ships as **Training Mind** (`com.gokalpelacmaz.memorygames2026`). The
+`slug` stays `memory-games` because it keys the EAS project — renaming it breaks
+the link to `extra.eas.projectId`.
 
-- `expo.ios.bundleIdentifier` and `expo.android.package` (currently
-  `com.example.memorygames`)
-- `expo.name`, `expo.slug`
-- the icons under `assets/`
+Build numbers are **not** in `app.json`. `eas.json` sets
+`appVersionSource: "remote"` with `autoIncrement`, so EAS holds the counter
+server-side and bumps it every build; `ios.buildNumber` and
+`android.versionCode` are deliberately absent because they would be ignored.
 
-Then build with EAS:
+Only `expo.version` is edited by hand, and only for a new user-facing release.
 
 ```bash
-npx eas build --platform ios --profile production
+eas build --platform ios --profile production
 ```
 
-Bump `expo.version` plus `ios.buildNumber` / `android.versionCode` per release.
+```bash
+eas submit --platform ios --latest
+```
+
+To inspect or correct the remote counter — needed if a build was ever uploaded
+outside EAS, since App Store Connect rejects a build number it has already seen
+for a given version:
+
+```bash
+eas build:version:get --platform ios
+```
+
+Going public is the **Distribution** tab in App Store Connect, not TestFlight;
+the two run side by side and releasing does not disable beta testing. Two things
+block a first submission: a privacy policy URL (required even though this app
+collects nothing — scores live only in local `AsyncStorage`), and iPad
+screenshots, which Apple demands because `ios.supportsTablet` is `true`.

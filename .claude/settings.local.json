@@ -19,7 +19,10 @@
       "Bash(node -p \"JSON.stringify\\(require\\('./app.json'\\).expo.plugins\\)\")",
       "Bash(cd /Users/gokalpelacmaz/KelMat && find src -type f | head -60)",
       "Bash(python3 -)",
-      "Bash(node --experimental-strip-types /private/tmp/claude-501/-Users-gokalpelacmaz-Memory-Games/48176d9f-fbb3-4ed1-a3b0-d6a3fbc8ceeb/scratchpad/release-test.ts)"
+      "Bash(node --experimental-strip-types /private/tmp/claude-501/-Users-gokalpelacmaz-Memory-Games/48176d9f-fbb3-4ed1-a3b0-d6a3fbc8ceeb/scratchpad/release-test.ts)",
+      "Bash(eas build:version:set --help)",
+      "Bash(perl -0pi -e 's/^# Memory Games$/# Training Mind/m' README.md)",
+      "Bash(perl -0pi -e 's/^# Memory Games$/# Training Mind/m' AGENTS.md)"
     ]
   }
 }

@@ -1,9 +1,12 @@
 import { useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import React, { useCallback, useRef, useState } from 'react';
+import { Alert, PixelRatio, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, ZoomIn } from 'react-native-reanimated';
+import { captureRef } from 'react-native-view-shot';
 
 import { Button } from '@/components/Button';
+import { ScoreShareCard } from '@/components/ScoreShareCard';
 import { Screen } from '@/components/Screen';
 import { useProgress } from '@/storage/progress';
 import { alpha, useTheme } from '@/theme/theme';
@@ -28,6 +31,8 @@ export function GameHost({ def }: { def: GameDefinition }) {
   // Bumped on every replay so the game component remounts with clean state.
   const [runId, setRunId] = useState(0);
   const [outcome, setOutcome] = useState<(RunOutcome & { newBest: boolean }) | null>(null);
+  const [sharingScore, setSharingScore] = useState(false);
+  const shareCardRef = useRef<View>(null);
 
   const record = recordOf(def.id);
 
@@ -58,6 +63,43 @@ export function GameHost({ def }: { def: GameDefinition }) {
     if (router.canGoBack()) router.back();
     else router.replace('/');
   }, [router]);
+
+  const shareScore = useCallback(async () => {
+    if (!shareCardRef.current || sharingScore) return;
+
+    setSharingScore(true);
+    try {
+      const available = await Sharing.isAvailableAsync();
+      if (!available) {
+        Alert.alert('Sharing unavailable', 'This device cannot open a share sheet right now.');
+        return;
+      }
+
+      // iOS capture sizes are points and Android's native module expects bitmap
+      // pixels. Normalising here produces a crisp image around 1080 px wide.
+      const imageWidth =
+        Platform.OS === 'android' ? 1080 : Math.round(1080 / PixelRatio.get());
+      const imageUri = await captureRef(shareCardRef, {
+        fileName: 'memory-games-score',
+        format: 'png',
+        height: Math.round(imageWidth / 1.25),
+        quality: 1,
+        result: 'tmpfile',
+        width: imageWidth,
+      });
+
+      await Sharing.shareAsync(imageUri, {
+        dialogTitle: `Share your ${def.title} score`,
+        mimeType: 'image/png',
+        UTI: 'public.png',
+      });
+    } catch (error) {
+      console.warn('Unable to share score image', error);
+      Alert.alert('Could not share score', 'Please try again in a moment.');
+    } finally {
+      setSharingScore(false);
+    }
+  }, [def.title, sharingScore]);
 
   if (stage === 'intro') {
     return (
@@ -153,18 +195,27 @@ export function GameHost({ def }: { def: GameDefinition }) {
           style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}
         >
           <View style={[styles.resultCard, { backgroundColor: theme.colors.bgElevated }]}>
-            <Text style={[styles.resultTitle, { color: theme.colors.text }]}>
+            <ScoreShareCard
+              ref={shareCardRef}
+              accent={accent}
+              best={Math.max(record.bestScore, outcome.score)}
+              gameTitle={def.title}
+              glyph={def.glyph}
+              level={outcome.level}
+              newBest={outcome.newBest}
+              score={outcome.score}
+            />
+            <Text style={[styles.resultReason, { color: theme.colors.textMuted }]}>
               {outcome.reason === 'time' ? "Time's up" : 'Run over'}
             </Text>
-            {outcome.newBest && (
-              <Text style={[styles.newBest, { color: accent }]}>New personal best</Text>
-            )}
-            <View style={styles.resultStats}>
-              <RecordTile label="Score" value={String(outcome.score)} />
-              <RecordTile label="Level" value={String(outcome.level)} />
-              <RecordTile label="Best" value={String(Math.max(record.bestScore, outcome.score))} />
-            </View>
             <Button label="Play again" onPress={replay} tint={accent} style={styles.resultButton} />
+            <Button
+              label={sharingScore ? 'Preparing image…' : 'Share score'}
+              onPress={shareScore}
+              variant="secondary"
+              tint={accent}
+              disabled={sharingScore}
+            />
             <Button
               label="Back to games"
               onPress={leave}
@@ -218,11 +269,9 @@ const styles = StyleSheet.create({
   countdown: { fontSize: 92, fontWeight: '900' },
   countdownHint: { fontSize: 15, fontWeight: '600' },
 
-  resultCard: { width: '100%', maxWidth: 380, borderRadius: 26, padding: 22, gap: 12, alignItems: 'stretch' },
-  resultTitle: { fontSize: 24, fontWeight: '800', textAlign: 'center' },
-  newBest: { fontSize: 13, fontWeight: '700', textAlign: 'center', letterSpacing: 0.6 },
-  resultStats: { flexDirection: 'row', gap: 10, marginVertical: 4 },
-  resultButton: { marginTop: 4 },
+  resultCard: { width: '100%', maxWidth: 380, borderRadius: 26, padding: 16, gap: 9, alignItems: 'stretch' },
+  resultReason: { fontSize: 12, fontWeight: '700', textAlign: 'center', marginTop: 1 },
+  resultButton: { marginTop: 1 },
 
   tile: { flex: 1, borderRadius: 16, paddingVertical: 12, alignItems: 'center', gap: 2 },
   tileValue: { fontSize: 20, fontWeight: '800', fontVariant: ['tabular-nums'] },

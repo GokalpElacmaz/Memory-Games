@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Memory Games",
+    "name": "Training Mind",
     "slug": "memory-games",
     "scheme": "memorygames",
     "version": "1.0.0",
@@ -11,14 +11,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.gokalpelacmaz.memorygames2026",
-      "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "com.example.memorygames",
-      "versionCode": 1,
+      "package": "com.gokalpelacmaz.memorygames2026",
       "adaptiveIcon": {
         "backgroundColor": "#0E1220",
         "foregroundImage": "./assets/memory-games-icon-android.png"
@@ -30,9 +28,17 @@
       "bundler": "metro",
       "output": "single"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "58b89b85-b9dc-4128-a2e5-71d2b69af140"
+      }
     }
   }
 }
